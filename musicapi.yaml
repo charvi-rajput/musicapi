@@ -1,5 +1,5 @@
 # every file needs this
-openapi: 3.0.4
+swagger: '2.0'
 
 # Document metadata
 info:
