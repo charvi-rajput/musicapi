@@ -1,0 +1,181 @@
+# every file needs this
+openapi: 3.0.4
+
+# Document metadata
+info:
+ version: "0.3.0"
+ title: Music API
+ description: Music API with Playlists
+
+# URL data
+host: api.muzicplayz.com
+basePath: /v3
+schemes: 
+  - https
+  
+consumes:
+ - application/json
+produces:
+ - application/json
+  
+# Endpoints
+paths:
+  /playlist:
+    get:
+      operationId: getplaylists 
+      description: Returns one or more playlists.
+# Query parameters
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          description: Number of playlists to return
+      
+        - name: offset
+          in: query
+          required: false
+          type: integer
+        
+        - name: search
+          in: query
+          required: false
+          type: string
+          description: Searches a particular type of song
+          
+      
+      # Incomplete response (to finish later)
+      responses:
+ # Response code
+        200:
+          description: Successful response
+          
+    post:
+      operationId: postplaylist
+# body parameters
+      parameters:
+        - name: newPlaylist
+          in: body
+          required: true
+          schema: 
+            $ref: '#/definitions/newPlaylist'
+
+
+# Incomplete response (to finish later)
+      responses:
+ # Response code
+        200:
+          description: Successful response
+        
+        
+  /playlist/{playlist-id}:
+    delete:
+      operationId: deleteplaylist
+# Path parameters
+      parameters:
+        - name: playlist-id
+          in: path
+          required: true
+          type: string
+
+
+# Incomplete response (to finish later)
+      responses:
+ # Response code
+        200:
+          description: Successful response
+        401:
+          description: Already deleted
+          schema:
+            $ref: '#/definitions/error'
+            
+    get:
+      operationId: getspecplaylist
+# Path parameters
+      parameters:
+        - name: playlist-id
+          in: path
+          required: true
+          type: string
+      
+# Incomplete response (to finish later)
+      responses:
+ # Response code
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/playlistwithsongs'
+            
+            
+  /playlist/{playlist-id}/image:         
+    get:
+      operationId: getimage
+# Path parameters
+      parameters:
+        - name: playlist-id
+          in: path
+          required: true
+          type: string
+      
+# Incomplete response (to finish later)
+      responses:
+ # Response code
+        200:
+          description: Successful response
+          schema:
+            type: file
+            
+      produces:
+        - image/png
+
+definitions:
+  newPlaylist:
+    type: object
+    properties:
+      name:
+        type: string
+      songIds:
+        type: array
+        items:
+          type: integer
+        
+  playlistwithsongs:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      songs:
+        type: array
+        items:
+          $ref: '#/definitions/song'
+  
+  song:
+    properties: 
+      id: 
+        type: integer
+      title: 
+        type: string
+      artist: 
+        type: string
+        
+  error:
+    properties:
+      errormsg:
+        type: string
+      logdata:
+        type: object
+        properties:
+          entry:
+            type: integer
+          date:
+            type: integer
+
+securityDefinitions:
+  basauth:
+    type: basic
+
+
+
+
+
