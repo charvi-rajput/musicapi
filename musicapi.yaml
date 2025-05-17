@@ -1,181 +1,199 @@
-# every file needs this
-swagger: '2.0'
+openapi: "3.0.4"
 
-# Document metadata
 info:
- version: "0.3.0"
- title: Music API
- description: Music API with Playlists
+  version: "0.3.0"
+  title: Music API
+  description: This is a sample Muzicplayz server.
 
-# URL data
-host: api.muzicplayz.com
-basePath: /v3
-schemes: 
-  - https
+servers:
+  - url: https://api.muzicplayz.com/v3
+
+tags:
+  - name: Your Library
+    description: Get, Create & Delete your Playlists
+    externalDocs:
+      description: More Info
+      url: https://api.muzicplayz.com/v3/yourlibrary
   
-consumes:
- - application/json
-produces:
- - application/json
-  
-# Endpoints
+
 paths:
   /playlist:
     get:
-      operationId: getplaylists 
+      operationId: getplaylists
+      security:
+        - basauth: []
       description: Returns one or more playlists.
-# Query parameters
+      tags:
+        - Your Library
       parameters:
         - name: limit
           in: query
           required: false
-          type: integer
+          schema:
+            type: integer
           description: Number of playlists to return
-      
         - name: offset
           in: query
           required: false
-          type: integer
-        
+          schema:
+            type: integer
         - name: search
           in: query
           required: false
-          type: string
+          schema:
+            type: string
           description: Searches a particular type of song
-          
-      
-      # Incomplete response (to finish later)
       responses:
- # Response code
         200:
           description: Successful response
-          
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/playlistwithsongs"
+
     post:
       operationId: postplaylist
-# body parameters
-      parameters:
-        - name: newPlaylist
-          in: body
-          required: true
-          schema: 
-            $ref: '#/definitions/newPlaylist'
-
-
-# Incomplete response (to finish later)
+      security:
+        - basauth: []
+      tags:
+        - Your Library
+      requestBody:
+        description: New playlist to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/newPlaylist"
       responses:
- # Response code
         200:
-          description: Successful response
-        
-        
+          description: Playlist created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/playlistwithsongs"
+
   /playlist/{playlist-id}:
-    delete:
-      operationId: deleteplaylist
-# Path parameters
-      parameters:
-        - name: playlist-id
-          in: path
-          required: true
-          type: string
-
-
-# Incomplete response (to finish later)
-      responses:
- # Response code
-        200:
-          description: Successful response
-        401:
-          description: Already deleted
-          schema:
-            $ref: '#/definitions/error'
-            
     get:
       operationId: getspecplaylist
-# Path parameters
+      security:
+        - basauth: []
+      tags:
+        - Your Library
       parameters:
         - name: playlist-id
           in: path
           required: true
-          type: string
-      
-# Incomplete response (to finish later)
+          schema:
+            type: string
       responses:
- # Response code
         200:
           description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/playlistwithsongs"
+
+    delete:
+      operationId: deleteplaylist
+      security:
+        - basauth: []
+      tags:
+        - Your Library
+      parameters:
+        - name: playlist-id
+          in: path
+          required: true
           schema:
-            $ref: '#/definitions/playlistwithsongs'
-            
-            
-  /playlist/{playlist-id}/image:         
+            type: string
+      responses:
+        200:
+          description: Playlist deleted successfully
+        401:
+          description: Already deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+
+  /playlist/{playlist-id}/image:
     get:
       operationId: getimage
-# Path parameters
+      security:
+        - basauth: []
+      tags:
+        - Your Library
       parameters:
         - name: playlist-id
           in: path
           required: true
-          type: string
-      
-# Incomplete response (to finish later)
+          schema:
+            type: string
       responses:
- # Response code
         200:
           description: Successful response
-          schema:
-            type: file
-            
-      produces:
-        - image/png
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
 
-definitions:
-  newPlaylist:
-    type: object
-    properties:
-      name:
-        type: string
-      songIds:
-        type: array
-        items:
+components:
+  schemas:
+    newPlaylist:
+      type: object
+      properties:
+        name:
+          type: string
+        songIds:
+          type: array
+          items:
+            type: integer
+      required:
+        - name
+        - songIds
+
+    playlistwithsongs:
+      type: object
+      properties:
+        id:
           type: integer
-        
-  playlistwithsongs:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      songs:
-        type: array
-        items:
-          $ref: '#/definitions/song'
-  
-  song:
-    properties: 
-      id: 
-        type: integer
-      title: 
-        type: string
-      artist: 
-        type: string
-        
-  error:
-    properties:
-      errormsg:
-        type: string
-      logdata:
-        type: object
-        properties:
-          entry:
-            type: integer
-          date:
-            type: integer
+        name:
+          type: string
+        songs:
+          type: array
+          items:
+            $ref: "#/components/schemas/song"
 
-securityDefinitions:
-  basauth:
-    type: basic
+    song:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        artist:
+          type: string
 
+    error:
+      type: object
+      properties:
+        errormsg:
+          type: string
+        logdata:
+          type: object
+          properties:
+            entry:
+              type: integer
+            date:
+              type: integer
 
-
-
-
+  securitySchemes:
+      basauth:
+        type: http
+        scheme: basic
