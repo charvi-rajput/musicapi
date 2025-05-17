@@ -57,6 +57,7 @@ paths:
       operationId: postplaylist
       security:
         - basauth: []
+      description: Creates a new playlist.
       tags:
         - Your Library
       requestBody:
@@ -79,6 +80,7 @@ paths:
       operationId: getspecplaylist
       security:
         - basauth: []
+      description: Returns a specific playlist using playlist-id.
       tags:
         - Your Library
       parameters:
@@ -99,6 +101,7 @@ paths:
       operationId: deleteplaylist
       security:
         - basauth: []
+      description: Deletes a playlist.
       tags:
         - Your Library
       parameters:
@@ -122,6 +125,7 @@ paths:
       operationId: getimage
       security:
         - basauth: []
+      description: Returns a specific playlist in image form.
       tags:
         - Your Library
       parameters:
