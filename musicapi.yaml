@@ -22,7 +22,7 @@ paths:
       operationId: getplaylists
       security:
         - basauth: []
-      description: Returns one or more playlists.
+      description: Returns all the playlists.
       tags:
         - Your Library
       parameters:
@@ -35,6 +35,7 @@ paths:
         - name: offset
           in: query
           required: false
+          description: Index of the first playlist to return
           schema:
             type: integer
         - name: search
@@ -45,7 +46,7 @@ paths:
           description: Searches a particular type of song
       responses:
         200:
-          description: Successful response
+          description: OK
           content:
             application/json:
               schema:
@@ -69,7 +70,7 @@ paths:
               $ref: "#/components/schemas/newPlaylist"
       responses:
         200:
-          description: Playlist created successfully
+          description: OK
           content:
             application/json:
               schema:
@@ -112,9 +113,9 @@ paths:
             type: string
       responses:
         200:
-          description: Playlist deleted successfully
+          description: OK
         401:
-          description: Already deleted
+          description: Already Deleted
           content:
             application/json:
               schema:
@@ -136,7 +137,7 @@ paths:
             type: string
       responses:
         200:
-          description: Successful response
+          description: OK
           content:
             image/png:
               schema:
